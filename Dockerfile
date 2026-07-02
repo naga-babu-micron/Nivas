@@ -110,5 +110,6 @@ USER node
 # Expose port 3000 to allow HTTP traffic
 EXPOSE 3000
 
-# Start Next.js standalone server
-CMD ["node", "server.js"]
+# Start Next.js standalone server. In some environments, Next can emit a nested
+# standalone tree (for example: ./Personal/Nivas/server.js), so resolve it dynamically.
+CMD ["sh", "-c", "if [ -f server.js ]; then node server.js; else SERVER_PATH=$(find . -type f -name server.js -not -path './node_modules/*' | head -n 1); if [ -z \"$SERVER_PATH\" ]; then echo 'Standalone server.js not found' >&2; exit 1; fi; node \"$SERVER_PATH\"; fi"]
