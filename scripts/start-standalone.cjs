@@ -1,6 +1,10 @@
 const fs = require("node:fs");
 const path = require("node:path");
 
+// Some container platforms inject HOSTNAME with the pod/container name, which can
+// fail DNS resolution during Next.js server bind. Force a safe bind host.
+process.env.HOSTNAME = "0.0.0.0";
+
 function findStandaloneServer() {
   const root = path.join(process.cwd(), ".next", "standalone");
   const direct = path.join(root, "server.js");
